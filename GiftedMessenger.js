@@ -66,7 +66,7 @@ class GiftedMessenger extends Component {
       dataSource: ds.cloneWithRows([]),
       text: props.text,
       disabled: true,
-      height: new Animated.Value(this.listViewMaxHeight),
+      height: this.listViewMaxHeight, // new Animated.Value(this.listViewMaxHeight),
       appearAnim: new Animated.Value(0),
     };
   }
@@ -179,23 +179,24 @@ class GiftedMessenger extends Component {
 
     if (nextProps.maxHeight !== this.props.maxHeight) {
       this.listViewMaxHeight = nextProps.maxHeight;
-      Animated.timing(this.state.height, {
-        toValue: this.listViewMaxHeight,
-        duration: 150,
-      }).start();
+      this.setState({height: this.listViewMaxHeight});
+      // Animated.timing(this.state.height, {
+      //   toValue: this.listViewMaxHeight,
+      //   duration: 150,
+      // }).start();
     }
 
     if (nextProps.hideTextInput && !this.props.hideTextInput) {
       this.listViewMaxHeight += textInputHeight;
 
       this.setState({
-        height: new Animated.Value(this.listViewMaxHeight),
+        height: this.listViewMaxHeight, //new Animated.Value(this.listViewMaxHeight),
       });
     } else if (!nextProps.hideTextInput && this.props.hideTextInput) {
       this.listViewMaxHeight -= textInputHeight;
 
       this.setState({
-        height: new Animated.Value(this.listViewMaxHeight),
+        height: this.listViewMaxHeight, //new Animated.Value(this.listViewMaxHeight),
       });
     }
   }
@@ -217,10 +218,11 @@ class GiftedMessenger extends Component {
   }
 
   onKeyboardWillHide() {
-    Animated.timing(this.state.height, {
-      toValue: this.listViewMaxHeight,
-      duration: 150,
-    }).start();
+    this.setState({height: this.listViewMaxHeight});
+    // Animated.timing(this.state.height, {
+    //   toValue: this.listViewMaxHeight,
+    //   duration: 150,
+    // }).start();
   }
 
   onKeyboardDidHide(e) {
@@ -237,10 +239,11 @@ class GiftedMessenger extends Component {
   }
 
   onKeyboardWillShow(e) {
-    Animated.timing(this.state.height, {
-      toValue: this.listViewMaxHeight - e.endCoordinates.height,
-      duration: 200,
-    }).start();
+    this.setState({height: this.listViewMaxHeight - e.endCoordinates.height});
+    // Animated.timing(this.state.height, {
+    //   toValue: this.listViewMaxHeight - e.endCoordinates.height,
+    //   duration: 200,
+    // }).start();
   }
 
   onKeyboardDidShow(e) {
@@ -418,6 +421,16 @@ class GiftedMessenger extends Component {
     );
   }
 
+  renderUploading() {
+    if (this.props.isUploading) {
+      return (
+        <View>
+          <GiftedSpinner />
+        </View>
+      )
+    }
+  }
+
   renderTypingMessage() {
     if (this.props.typingMessage) {
       return (
@@ -447,6 +460,7 @@ class GiftedMessenger extends Component {
       <View
         onLayout={this.onFooterLayout}
       >
+        {this.renderUploading()}
         {this.renderTypingMessage()}
       </View>
     );
@@ -591,11 +605,14 @@ class GiftedMessenger extends Component {
             onChangeText={this.onChangeText}
             value={this.state.text}
             autoFocus={this.props.autoFocus}
+            autoCapitalize='sentences'
             returnKeyType={this.props.submitOnReturn ? 'send' : 'default'}
             onSubmitEditing={this.props.submitOnReturn ? this.onSend : () => {}}
             enablesReturnKeyAutomatically={true}
 
             blurOnSubmit={this.props.blurOnSubmit}
+    
+            {...this.props.textInputProps}
           />
           <Button
             style={this.styles.sendButton}
@@ -638,6 +655,7 @@ GiftedMessenger.defaultProps = {
   },
   hideTextInput: false,
   isLoadingEarlierMessages: false,
+  isUploading: false,
   keyboardDismissMode: 'interactive',
   keyboardShouldPersistTaps: true,
   leftControlBar: null,
@@ -680,6 +698,7 @@ GiftedMessenger.propTypes = {
   handleUrlPress: React.PropTypes.func,
   hideTextInput: React.PropTypes.bool,
   isLoadingEarlierMessages: React.PropTypes.bool,
+  isUploading: React.PropTypes.bool,
   keyboardDismissMode: React.PropTypes.string,
   keyboardShouldPersistTaps: React.PropTypes.bool,
   leftControlBar: React.PropTypes.element,
