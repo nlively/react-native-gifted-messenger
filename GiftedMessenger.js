@@ -231,7 +231,7 @@ class GiftedMessenger extends Component {
     }
 
     // TODO test in android
-    if (this.props.keyboardShouldPersistTaps === false) {
+    if (this.props.keyboardShouldPersistTaps !== 'always') {
       if (this.isLastMessageVisible()) {
         this.scrollToBottom();
       }
@@ -657,7 +657,7 @@ GiftedMessenger.defaultProps = {
   isLoadingEarlierMessages: false,
   isUploading: false,
   keyboardDismissMode: 'interactive',
-  keyboardShouldPersistTaps: true,
+  keyboardShouldPersistTaps: 'always',
   leftControlBar: null,
   loadEarlierMessagesButton: false,
   loadEarlierMessagesButtonText: 'Load earlier messages',
@@ -700,7 +700,7 @@ GiftedMessenger.propTypes = {
   isLoadingEarlierMessages: React.PropTypes.bool,
   isUploading: React.PropTypes.bool,
   keyboardDismissMode: React.PropTypes.string,
-  keyboardShouldPersistTaps: React.PropTypes.bool,
+  keyboardShouldPersistTaps: React.PropTypes.string,
   leftControlBar: React.PropTypes.element,
   loadEarlierMessagesButton: React.PropTypes.bool,
   loadEarlierMessagesButtonText: React.PropTypes.string,
